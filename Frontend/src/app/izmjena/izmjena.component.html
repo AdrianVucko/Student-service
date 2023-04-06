@@ -1,0 +1,145 @@
+<div class="container-fluid">
+  <div class="glavno">
+    <div *ngIf="idEntiteta === 'kolegiji'">
+      <h1>Kolegij</h1>
+      <div *ngIf="Odabrani!==undefined">
+        <h3>{{Odabrani.id}}. {{Odabrani.naziv}}</h3>
+        <p>Smjer: {{Odabrani.nazivSmjera}}</p>
+        <p>Opis kolegija: {{Odabrani.opis}}</p><br>
+        <h4>Nastavnici na kolegiju</h4>
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th scope="col">Jmbg</th>
+            <th scope="col">Email</th>
+            <th scope="col">Ime</th>
+            <th scope="col">Prezime</th>
+            <th scope="col" *ngIf="user.level===1"></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let zaseban of filtracijaKolegijaNas(Odabrani.id)" >
+            <th scope="row">{{zaseban.jmbg}}</th>
+            <td>{{zaseban.email}}</td>
+            <td>{{zaseban.ime}}</td>
+            <td>{{zaseban.prezime}}</td>
+            <td *ngIf="user.level===1"><button class="btn btn-danger" (click)="izbrisiNastavnikaSTogKolegija(zaseban.jmbg,Odabrani.id)">Izbriši</button></td>
+          </tr>
+          </tbody>
+        </table>
+        <div *ngIf="user.level===1" class="mojNeki">
+          <select [(ngModel)]="noviNastavnik">
+            <option disabled selected [ngValue]="''">Odaberi nastavnika</option>
+            <option *ngFor="let kol of filtarcijaNastavnikaZaVecPostojeceUKolegiju(Odabrani.id)" [ngValue]="kol.jmbg">{{kol.ime}} {{kol.prezime}}</option>
+          </select>
+          <div *ngIf="messageDva.length>0" style="color: red; margin-left: 10px"><p>{{messageDva}}</p></div>
+          <button class="btn btn-success" style="margin-left: 60%; margin-top: 10px" (click)="dodajNovogNastavnikaNaTajKolegij()">Dodaj nastavnika</button>
+        </div><br><br>
+        <h4>Studenti na kolegiju</h4>
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th scope="col">Jmbag</th>
+            <th scope="col">Ime</th>
+            <th scope="col">Prezime</th>
+            <th scope="col">Datum Upisa</th>
+            <th scope="col" *ngIf="user.level===1"></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let zaseban of filtrcijaKolegijaStu(Odabrani.id)">
+            <th scope="row">{{zaseban.jmbag}}</th>
+            <td>{{zaseban.ime}}</td>
+            <td>{{zaseban.prezime}}</td>
+            <td>{{zaseban.datumupisa | date: 'yyyy-MM-dd'}}</td>
+            <td *ngIf="user.level===1"><button class="btn btn-danger" (click)="izbrisiStudentaSTogKolegija(zaseban.jmbag,Odabrani.id)">Izbriši</button></td>
+          </tr>
+          </tbody>
+        </table>
+        <div *ngIf="user.level===1" class="mojNeki">
+          <select [(ngModel)]="noviStudent">
+            <option disabled selected [ngValue]="''">Odaberi Studenta</option>
+            <option *ngFor="let kol of filtarcijaStudenataZaVecPostojeceUKolegiju(Odabrani.id)" [ngValue]="kol.jmbag">{{kol.ime}} {{kol.prezime}}</option>
+          </select>
+          <div *ngIf="messageTri.length>0" style="color: red; margin-left: 10px"><p>{{messageTri}}</p></div>
+          <button class="btn btn-success" style="margin-left: 60%; margin-top: 10px" (click)="dodajNovogStudentaNaTajKolegij()">Dodaj studenta</button>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="idEntiteta=== 'nastavnici'">
+      <h1>Nastavnik</h1>
+      <div *ngIf="Odabrani!==undefined">
+        <h3>{{Odabrani.ime}} {{Odabrani.prezime}}</h3>
+        <p>Jmbg: {{Odabrani.jmbg}}</p>
+        <p>Email: {{Odabrani.email}}</p>
+        <p *ngIf="user.level===1">Level: {{Odabrani.level}} {{Odabrani.level===1 ? "(administrator i nastavnik)" : "(nastavnik)"}}</p>
+        <h4>Kolegiji na kojima nastavnik predaje</h4>
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Naziv</th>
+            <th scope="col">Opis</th>
+            <th scope="col">Naziv Smjera</th>
+            <th scope="col"></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let zaseban of filtracijaNastavnikaKol(Odabrani.svizatog)">
+            <th scope="row">{{zaseban.id}}</th>
+            <td>{{zaseban.naziv}}</td>
+            <td>{{zaseban.opis}}</td>
+            <td>{{zaseban.nazivSmjera}}</td>
+            <td><button class="btn btn-danger" (click)="izbrisiTajKolegijSNastavnika(Odabrani.jmbg,zaseban.id)">Izbriši</button></td>
+          </tr>
+          </tbody>
+        </table>
+        <div class="mojNeki">
+          <select [(ngModel)]="noviKolegij">
+            <option disabled selected [ngValue]="0">Odaberi kolegij</option>
+            <option *ngFor="let kol of filtracijaKolegijaZaVecPostojece(Odabrani)" [ngValue]="kol.id">{{kol.id}}. {{kol.naziv}} ({{kol.nazivSmjera}})</option>
+          </select>
+          <div *ngIf="message.length>0" style="color: red; margin-left: 10px"><p>{{message}}</p></div>
+          <button class="btn btn-success" style="margin-left: 60%; margin-top: 10px" (click)="dodajNoviKolegijNaTajEntitet()">Dodaj kolegij</button>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="idEntiteta=== 'studenti'">
+      <h1>Student</h1>
+      <div *ngIf="Odabrani!==undefined">
+        <h3>{{Odabrani.ime}} {{Odabrani.prezime}}</h3>
+        <p>Jmbag: {{Odabrani.jmbag}}</p>
+        <p>Datum upisa: {{Odabrani.datumupisa | date: 'yyyy-MM-dd'}}</p>
+        <h4>Kolegiji koje student sluša</h4>
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Naziv</th>
+            <th scope="col">Opis</th>
+            <th scope="col">Naziv Smjera</th>
+            <th scope="col" *ngIf="user.level===1"></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let zaseban of filtracijaNastavnikaKol(Odabrani.svizatog)">
+            <th scope="row">{{zaseban.id}}</th>
+            <td>{{zaseban.naziv}}</td>
+            <td>{{zaseban.opis}}</td>
+            <td>{{zaseban.nazivSmjera}}</td>
+            <td *ngIf="user.level===1"><button class="btn btn-danger" (click)="izbrisiTajKolegijSStudenta(Odabrani.jmbag,zaseban.id)">Izbriši</button></td>
+          </tr>
+          </tbody>
+        </table>
+        <div class="mojNeki" *ngIf="user.level===1">
+          <select [(ngModel)]="noviKolegij">
+            <option disabled selected [ngValue]="0">Odaberi kolegij</option>
+            <option *ngFor="let kol of filtracijaKolegijaZaVecPostojece(Odabrani)" [ngValue]="kol.id">{{kol.id}}. {{kol.naziv}} ({{kol.nazivSmjera}})</option>
+          </select>
+          <div *ngIf="message.length>0" style="color: red; margin-left: 10px"><p>{{message}}</p></div>
+          <button class="btn btn-success" style="margin-left: 60%; margin-top: 10px" (click)="dodajNoviKolegijNaTajEntitet()">Dodaj kolegij</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

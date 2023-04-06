@@ -1,0 +1,23 @@
+.form-group{
+  margin: 10px;
+}
+button{
+  margin: 10px;
+}
+.glavno{
+  margin: 50px auto 0;
+  padding: 20px;
+  width: 50%;
+  border-radius: 20px;
+  background-color: white;
+}
+.glavno h1{
+  text-align: center;
+}
+.glavno .gumbi{
+  width: 40%;
+  margin: 0 auto;
+}
+.glavno input{
+  width: 60%;
+}

@@ -1,0 +1,48 @@
+<div class="container-fluid">
+  <div class="glavno">
+    <h1 style="margin-left: 10px">Register</h1>
+    <form novalidate #f="ngForm">
+      <div class="form-group">
+        <label>Jmbg (Samo brojevi dopušteni)</label>
+        <input type="text" class="form-control" name="jmbg" [(ngModel)]="user.jmbg" pattern="[0-9]*" placeholder="Unesi jmbg" required>
+      </div>
+      <div class="form-group">
+        <label>Ime</label>
+        <input type="text" class="form-control" name="name" [(ngModel)]="user.name" placeholder="Unesi ime" required>
+      </div>
+      <div class="form-group">
+        <label>Prezime</label>
+        <input type="text" class="form-control" name="surname" [(ngModel)]="user.surname" placeholder="Unesi prezime" required>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email"
+               [ngClass]="{
+                  'is-invalid': email.invalid && (email.dirty || email.touched),
+                  'is-valid': email.valid && (email.dirty || email.touched)
+             }"
+               class="form-control" name="email" pattern="[^ @]*@[^ @]*" [(ngModel)]="user.email"  required #email="ngModel" placeholder="Unesi email">
+      </div>
+      <div class="form-group">
+        <label>Lozinka</label>
+        <input type="password" class="form-control" name="password" [(ngModel)]="user.password" required placeholder="Unesi lozinku">
+      </div>
+      <div class="form-group">
+        <label>Ponovi lozinku</label>
+        <input type="password" class="form-control" name="repeatPassword" [(ngModel)]="check" required placeholder="Ponovi lozinku">
+      </div>
+      <div class="form-group">
+        <label>Odaberi kolegije</label><br>
+        <div *ngFor="let kole of kolegijiScekom">
+          <input  type="checkbox" value="{{kole.naziv}}({{kole.nazivSmjera}})" id="{{kole.naziv}}({{kole.nazivSmjera}})" name="Predmeti" [(ngModel)]="kole.checked">
+          <label for="{{kole.naziv}}({{kole.nazivSmjera}})">{{kole.naziv}} ({{kole.nazivSmjera}})</label>
+        </div>
+      </div>
+      <br>
+      <div class="gumbi"><button class="btn btn-success" [disabled]="!f.valid" (click)="addClick(user)">Register!</button></div>
+    </form><br>
+    <div *ngIf="message.length>0" style="color: red; margin-left: 10px"><p *ngFor="let sv of message.split('|')">{{sv}}</p></div>
+    <div style="text-align: center"><a [routerLink]="['../login']">Back to login</a></div>
+  </div>
+</div>
+<div>{{preb()}}</div>

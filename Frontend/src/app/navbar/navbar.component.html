@@ -1,0 +1,35 @@
+<!--<nav class="navbar navbar-dark bg-primary navbar-expand-lg">
+  <div collapse navbar-collapse>
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item" ><a class="nav-link" [routerLink]="['']">Home</a></li>
+      <li class="nav-item" ><a class="nav-link" [routerLink]="['detalji','nastavnici']">Nastavnici</a></li>
+      <li class="nav-item" ><a class="nav-link" [routerLink]="['detalji','studenti']">Studenti</a></li>
+      <li class="nav-item" ><a class="nav-link" [routerLink]="['detalji','kolegiji']">Kolegiji</a></li>
+      <li class="nav-item" ><a class="nav-link" style="cursor: pointer" (click)="logout()" *ngIf="jerAutenticiran()">Logout</a></li>
+      <li class="nav-item" ><a class="nav-link" [routerLink]="['login']" *ngIf="!jerAutenticiran()">Login</a></li>
+    </ul>
+  </div>
+</nav>-->
+
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="container-fluid">
+      <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item" ><a class="nav-link" [ngClass]="jerAutenticiran() ? 'active' : 'disabled'" [routerLink]="['']">Home</a></li>
+          <li class="nav-item" ><a class="nav-link" [ngClass]="jerAutenticiran() ? 'active' : 'disabled'" [routerLink]="['detalji','nastavnici']">Nastavnici</a></li>
+          <li class="nav-item" ><a class="nav-link" [ngClass]="jerAutenticiran() ? 'active' : 'disabled'" [routerLink]="['detalji','studenti']">Studenti</a></li>
+          <li class="nav-item" ><a class="nav-link" [ngClass]="jerAutenticiran() ? 'active' : 'disabled'" [routerLink]="['detalji','kolegiji']">Kolegiji</a></li>
+        </ul>
+      </div>
+      <div class="mx-auto order-0">
+        <a class="navbar-brand mx-auto">Studentska služba</a>
+      </div>
+      <div class="navbar-collapse collapse w-100 order-5 dual-collapse2">
+        <ul class="navbar-nav ml-auto proba">
+          <li class="nav-item" ><a class="nav-link active" style="cursor: pointer" (click)="logout()" *ngIf="jerAutenticiran()">Logout</a></li>
+          <li class="nav-item" ><a class="nav-link active" [routerLink]="['login']" *ngIf="!jerAutenticiran()">Login</a></li>
+        </ul>
+      </div>
+    </div>
+</nav>
+

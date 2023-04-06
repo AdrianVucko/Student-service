@@ -1,0 +1,136 @@
+<div class="container-fluid">
+  <div class="glavno">
+    <h1>Nastavnici</h1>
+    <label>JMBG: <input type="text" placeholder="Unesite jmbg" [(ngModel)]="jmbgZaFilter"></label><br><br>
+    <table matSort (matSortChange)="sortDataNastavnici($event)" class="table table-striped">
+      <thead>
+      <tr>
+        <th scope="col" mat-sort-header="jmbg">Jmbg</th>
+        <th scope="col" mat-sort-header="email">Email</th>
+        <th scope="col" mat-sort-header="imeNastavnika">Ime</th>
+        <th scope="col" mat-sort-header="prezimeNastavnika">Prezime</th>
+        <th *ngIf="user.level===1" scope="col" mat-sort-header="levelNastavnika">Level</th>
+        <th *ngIf="user.level===1" scope="col"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let zaseban of sviNastavnici | filter: 'jmbg' : jmbgZaFilter">
+        <th scope="row" (click)="prebaci('nastavnici',zaseban.jmbg)" style="cursor: pointer">{{zaseban.jmbg}}</th>
+        <td (click)="prebaci('nastavnici',zaseban.jmbg)" style="cursor: pointer">{{zaseban.email}}</td>
+        <td (click)="prebaci('nastavnici',zaseban.jmbg)" style="cursor: pointer">{{zaseban.ime}}</td>
+        <td (click)="prebaci('nastavnici',zaseban.jmbg)" style="cursor: pointer">{{zaseban.prezime}}</td>
+        <td *ngIf="user.level===1" (click)="prebaci('nastavnici',zaseban.jmbg)" style="cursor: pointer">{{zaseban.level}}</td>
+        <td *ngIf="user.level===1"><button *ngIf="zaseban.level===2" class="btn btn-warning" (click)="updejtajLevelNastavniku(zaseban)">Update level</button></td>
+      </tr>
+      </tbody>
+    </table>
+    <br><br>
+    <h1>Kolegiji</h1>
+    <label>Naziv kolegija: <input type="text" placeholder="Unesite naziv kolegija" [(ngModel)]="nazivKolegijaZaFilter"></label><br><br>
+    <table matSort (matSortChange)="sortDataKolegiji($event)" class="table table-striped">
+      <thead>
+      <tr>
+        <th scope="col" mat-sort-header="id">Id</th>
+        <th scope="col" mat-sort-header="naziv">Naziv</th>
+        <th scope="col" mat-sort-header="opis">Opis</th>
+        <th scope="col" mat-sort-header="nazivSmjera">Naziv Smjera</th>
+        <th scope="col" *ngIf="user.level===1"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let zaseban of sviKolegijiSIzmjenom | filter: 'naziv': nazivKolegijaZaFilter">
+        <th scope="row">{{zaseban.id}}</th>
+        <td (click)="prebaci('kolegiji',zaseban.id)" style="cursor: pointer" *ngIf="zaseban.izmjena===false">{{zaseban.naziv}}</td>
+        <td (click)="prebaci('kolegiji',zaseban.id)" style="cursor: pointer" *ngIf="zaseban.izmjena===false">{{zaseban.opis}}</td>
+        <td (click)="prebaci('kolegiji',zaseban.id)" style="cursor: pointer" *ngIf="zaseban.izmjena===false">{{zaseban.nazivSmjera}}</td>
+        <td *ngIf="zaseban.izmjena===true"><input type="text" placeholder="Unesite novi naziv kolegija" [(ngModel)]="zaseban.naziv"></td>
+        <td *ngIf="zaseban.izmjena===true"><input type="text" placeholder="Unesite novi opis kolegija" [(ngModel)]="zaseban.opis"></td>
+        <td *ngIf="zaseban.izmjena===true"><input type="text" placeholder="Unesite novi naziv smjera" [(ngModel)]="zaseban.nazivSmjera"></td>
+        <td *ngIf="user.level===1"><button class="btn btn-warning" style="margin-right: 10px; margin-bottom: 10px" (click)="izmjeniKolegij(zaseban.id)">Izmjeni</button><button class="btn btn-danger" (click)="izbrisiKolegij(zaseban.id)">Izbriši</button></td>
+      </tr>
+      </tbody>
+    </table>
+    <button *ngIf="user.level===1" class="btn" [ngClass]="!pokaziKolegij ? 'btn-success' : 'btn-danger'" (click)="pokaziKolegij=!pokaziKolegij;resetirajKolegij()">{{!pokaziKolegij ? "Novi kolegij" : "Cancel"}}</button>
+    <div *ngIf="pokaziKolegij" class="mojNeki">
+      <h3>Novi Kolegij</h3>
+      <form novalidate #f="ngForm">
+        <div class="form-group">
+          <label>Id</label>
+          <input type="number" class="form-control" name="id" [(ngModel)]="noviKolegij.id" pattern="[0-9]*" placeholder="Unesi id kolegija" required>
+        </div>
+        <div class="form-group">
+          <label>Naziv</label>
+          <input type="text" class="form-control" name="nazivKo" [(ngModel)]="noviKolegij.naziv" placeholder="Unesi naziv kolegija" required>
+        </div>
+        <div class="form-group">
+          <label>Opis</label>
+          <textarea class="form-control" name="opisKo" [(ngModel)]="noviKolegij.opis" placeholder="Unesi opis kolegija" required rows="10"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Odaberi Smjer</label><br>
+          <select [(ngModel)]="noviKolegij.idSmjer">
+            <option disabled selected [ngValue]="0">Odaberi smjer</option>
+            <option *ngFor="let smjerg of sviSmjerovi" [ngValue]="smjerg.idSmjer">{{smjerg.idSmjer}}. {{smjerg.nazivSmjera}}</option>
+          </select>
+        </div>
+        <br>
+        <div *ngIf="messageDva.length>0" style="color: red; margin-left: 10px"><p *ngFor="let sv of messageDva.split('|')">{{sv}}</p></div>
+        <div class="gumbi"><button class="btn btn-success" [disabled]="!f.valid" (click)="addClickKolegij()">Dodaj novi kolegij</button></div>
+      </form>
+    </div>
+    <br><br>
+    <h1>Studenti</h1>
+    <label>JMBAG: <input type="text" placeholder="Unesite jmbag" [(ngModel)]="jmbagZaFilter"></label><br><br>
+    <table matSort (matSortChange)="sortDataStudenti($event)" class="table table-striped">
+      <thead>
+      <tr>
+        <th scope="col" mat-sort-header="jmbag">Jmbag</th>
+        <th scope="col" mat-sort-header="ime">Ime</th>
+        <th scope="col" mat-sort-header="prezime">Prezime</th>
+        <th scope="col" mat-sort-header="datumUpisa">Datum Upisa</th>
+        <th scope="col" *ngIf="user.level===1"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let zaseban of sviStudentiSIzmjenom | filter: 'jmbag' : jmbagZaFilter">
+        <th scope="row" (click)="prebaci('studenti',zaseban.jmbag)" style="cursor: pointer">{{zaseban.jmbag}}</th>
+        <td (click)="prebaci('studenti',zaseban.jmbag)" style="cursor: pointer" *ngIf="zaseban.izmjena===false">{{zaseban.ime}}</td>
+        <td (click)="prebaci('studenti',zaseban.jmbag)" style="cursor: pointer" *ngIf="zaseban.izmjena===false">{{zaseban.prezime}}</td>
+        <td (click)="prebaci('studenti',zaseban.jmbag)" style="cursor: pointer" *ngIf="zaseban.izmjena===false">{{zaseban.datumupisa | date: 'yyyy-MM-dd'}}</td>
+        <td *ngIf="zaseban.izmjena===true"><input type="text" placeholder="Unesite novo ime" [(ngModel)]="zaseban.ime"></td>
+        <td *ngIf="zaseban.izmjena===true"><input type="text" placeholder="Unesite novo prezime" [(ngModel)]="zaseban.prezime"></td>
+        <td *ngIf="zaseban.izmjena===true"><input type="date" #myDate [value]="zaseban.datumupisa | date:'yyyy-MM-dd'" (input)="zaseban.datumupisa=parseDate(myDate.value)" /></td>
+        <td *ngIf="user.level===1"><button class="btn btn-warning" style="margin-right: 10px" (click)="izmjeniStudenta(zaseban.jmbag)">Izmjeni</button><button class="btn btn-danger" (click)="izbrisiStudenta(zaseban.jmbag)">Izbriši</button></td>
+      </tr>
+      </tbody>
+    </table>
+    <button class="btn" *ngIf="user.level===1" [ngClass]="!pokaziStudent ? 'btn-success' : 'btn-danger'" (click)="pokaziStudent=!pokaziStudent;resetirajStudenta()">{{!pokaziStudent ? "Novi student" : "Cancel"}}</button>
+    <div *ngIf="pokaziStudent" class="mojNeki">
+      <h3>Novi student</h3>
+      <form novalidate #f="ngForm">
+        <div class="form-group">
+          <label>Jmbag (Samo brojevi dopušteni)</label>
+          <input type="text" class="form-control" name="jmbag" [(ngModel)]="noviStudent.jmbag" pattern="[0-9]*" placeholder="Unesi jmbag" required>
+        </div>
+        <div class="form-group">
+          <label>Ime</label>
+          <input type="text" class="form-control" name="name" [(ngModel)]="noviStudent.ime" placeholder="Unesi ime" required>
+        </div>
+        <div class="form-group">
+          <label>Prezime</label>
+          <input type="text" class="form-control" name="surname" [(ngModel)]="noviStudent.prezime" placeholder="Unesi prezime" required>
+        </div>
+        <div class="form-group">
+          <label>Odaberi kolegije</label><br>
+          <div *ngFor="let kole of kolegijiScekom">
+            <input  type="checkbox" value="{{kole.naziv}}({{kole.nazivSmjera}})" id="{{kole.naziv}}({{kole.nazivSmjera}})" name="Predmeti" [(ngModel)]="kole.checked">
+            <label for="{{kole.naziv}}({{kole.nazivSmjera}})">{{kole.naziv}} ({{kole.nazivSmjera}})</label>
+          </div>
+        </div>
+        <br>
+        <div *ngIf="message.length>0" style="color: red; margin-left: 10px"><p *ngFor="let sv of message.split('|')">{{sv}}</p></div>
+        <div class="gumbi"><button class="btn btn-success" [disabled]="!f.valid" (click)="addClick()">Dodaj novog studenta</button></div>
+      </form>
+    </div>
+  </div>
+</div>

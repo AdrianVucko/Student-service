@@ -1,0 +1,117 @@
+<div class="container-fluid">
+  <div class="glavno">
+    <div *ngIf="idEntiteta === 'kolegiji'">
+      <h1>Kolegiji</h1>
+      <label>Ime kolegija: <input type="text" placeholder="Unsite ime" [(ngModel)]="nazivKolegijaZaFilter"></label>
+      <hr>
+      <div *ngFor="let kolegij of sviKolegiji | filter: 'naziv': nazivKolegijaZaFilter">
+        <h3>{{kolegij.id}} {{kolegij.naziv}}</h3>
+        <p>Smjer: {{kolegij.nazivSmjera}}</p>
+        <p>Opis kolegija: {{kolegij.opis}}</p><br>
+        <h4>Nastavnici na kolegiju</h4>
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th scope="col">Jmbg</th>
+            <th scope="col">Email</th>
+            <th scope="col">Ime</th>
+            <th scope="col">Prezime</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let zaseban of filtracijaKolegijaNas(kolegij.id)" >
+            <th scope="row">{{zaseban.jmbg}}</th>
+            <td>{{zaseban.email}}</td>
+            <td>{{zaseban.ime}}</td>
+            <td>{{zaseban.prezime}}</td>
+          </tr>
+          </tbody>
+        </table><br>
+        <h4>Studenti na kolegiju</h4>
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th scope="col">Jmbag</th>
+            <th scope="col">Ime</th>
+            <th scope="col">Prezime</th>
+            <th scope="col">Datum Upisa</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let zaseban of filtrcijaKolegijaStu(kolegij.id)">
+            <th scope="row">{{zaseban.jmbag}}</th>
+            <td>{{zaseban.ime}}</td>
+            <td>{{zaseban.prezime}}</td>
+            <td>{{zaseban.datumupisa | date: 'yyyy-MM-dd'}}</td>
+          </tr>
+          </tbody>
+        </table>
+        <button class="btn btn-primary" (click)="prebaci('kolegiji',kolegij.id)" style="margin-left: 80%">Detalji</button>
+        <hr><br>
+      </div>
+    </div>
+    <div *ngIf="idEntiteta=== 'nastavnici'">
+      <h1>Nastavnici</h1>
+      <label>Ime nastavnika: <input type="text" placeholder="Unsite ime" [(ngModel)]="nazivNastavnikaZaFilter"></label>
+      <hr>
+      <div *ngFor="let nastavnik of sviNastavnici | filter: 'ime' : nazivNastavnikaZaFilter">
+        <h3>{{nastavnik.ime}} {{nastavnik.prezime}}</h3>
+        <p>Jmbg: {{nastavnik.jmbg}}</p>
+        <p>Email: {{nastavnik.email}}</p>
+        <p *ngIf="user.level===1">Level: {{nastavnik.level}} {{nastavnik.level===1 ? "(administrator i nastavnik)" : "(nastavnik)"}}</p>
+        <h4>Kolegiji na kojima nastavnik predaje</h4>
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Naziv</th>
+            <th scope="col">Opis</th>
+            <th scope="col">Naziv Smjera</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let zaseban of filtracijaNastavnikaKol(nastavnik.svizatog)">
+            <th scope="row">{{zaseban.id}}</th>
+            <td>{{zaseban.naziv}}</td>
+            <td>{{zaseban.opis}}</td>
+            <td>{{zaseban.nazivSmjera}}</td>
+          </tr>
+          </tbody>
+        </table>
+        <button class="btn btn-primary" (click)="prebaci('nastavnici',nastavnik.jmbg)" style="margin-left: 80%">Detalji</button>
+        <hr><br>
+      </div>
+    </div>
+    <div *ngIf="idEntiteta=== 'studenti'">
+      <h1>Studenti</h1>
+      <label>Ime studenta: <input type="text" placeholder="Unsite ime" [(ngModel)]="nazivStudentaZaFilter"></label>
+      <hr>
+      <div *ngFor="let student of sviStudenti | filter: 'ime' : nazivStudentaZaFilter">
+        <h3>{{student.ime}} {{student.prezime}}</h3>
+        <p>Jmbag: {{student.jmbag}}</p>
+        <p>Datum upisa: {{student.datumupisa | date: 'yyyy-MM-dd'}}</p>
+        <h4>Kolegiji koje student sluša</h4>
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Naziv</th>
+            <th scope="col">Opis</th>
+            <th scope="col">Naziv Smjera</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let zaseban of filtracijaNastavnikaKol(student.svizatog)">
+            <th scope="row">{{zaseban.id}}</th>
+            <td>{{zaseban.naziv}}</td>
+            <td>{{zaseban.opis}}</td>
+            <td>{{zaseban.nazivSmjera}}</td>
+          </tr>
+          </tbody>
+        </table>
+        <button class="btn btn-primary" (click)="prebaci('studenti',student.jmbag)" style="margin-left: 80%">Detalji</button>
+        <hr><br>
+      </div>
+    </div>
+  </div>
+</div>
