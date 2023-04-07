@@ -20,3 +20,5 @@ MainService, userService and authService - Used for communication with the serve
 Back end:
 api- Protected by token. It is used to retrieve, modify, delete and add data for all components except login and registration.
 authenticate- Used to retrieve and add users to the login and registration component.
+
+"prezentacijazagithub.mp4" is a video presentation of the app.
